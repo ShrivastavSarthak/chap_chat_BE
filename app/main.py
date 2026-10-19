@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from app.db.db import CallDB
 from app.router.auth_route import auth_route
+from app.router.otp_route import otp_route
 from app.service.startup_service import lifespan
 app = FastAPI(
     title="Chap chat BE",
@@ -10,7 +11,7 @@ app = FastAPI(
 
 CallDB()
 app.include_router(auth_route)
-
+app.include_router(otp_route)
 
 @app.get("/")
 async def root():
