@@ -7,6 +7,9 @@ from app.model.user_modal import User
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from app.service.JWT_service import create_access_token
+from app.service.email_service import email_service 
+from app.utils.email_templates.otp_email_template import get_otp_email_template
+from app.schema.email_schema import email_schema
 
 async def createOTP(emailData:OTPBase, db: Session):
     try:
@@ -30,16 +33,23 @@ async def createOTP(emailData:OTPBase, db: Session):
         db.execute(stmt)
         db.commit()
         
+        email_template= get_otp_email_template(otp)
+        mail = email_schema(
+            to=emailData.email,
+            title="Verification code",
+            description=email_template
+        )
+        email_service(mail)
+        
         return{
-            "message":"OTP created successfully",
+            "message":"OTP send successfully",
             "status_code":200,
-            "OTP": otp  
         }
     except Exception as e:
         db.rollback()
-        HTTPException(
+        raise HTTPException(
             status_code= status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to create OTP"
+            detail=f"Failed to create OTP, {e}"
         )
 
 async def verifyOTP(otp_data: OTPMatch, db: Session):
