@@ -5,6 +5,7 @@ from app.service.JWT_service import create_access_token
 from fastapi import HTTPException, status
 from datetime import timedelta
 import uuid
+
 async def authUser(userData:UserLogin, db:Session):
     existing_user = db.query(User).filter(User.email == userData.email).first()
     if existing_user:
