@@ -1,12 +1,12 @@
 from app.schema.llm_schema import ChatRequest
 from fastapi.responses import StreamingResponse
-from app.service.llm_service import llmService
+from app.service.llm_service import guestLLMService
 from fastapi import HTTPException,status
 
 async def llmController(payload:ChatRequest):
     try:
         return StreamingResponse(
-            llmService(payload.user_id,payload.message),
+            guestLLMService(payload.user_id,payload.message),
             media_type="text/plain; charset=utf-8",
             headers={
                 "Cache-Control": "no-cache",

@@ -12,14 +12,12 @@ if not api_key:
 
 client = AsyncOpenAI(api_key=api_key, base_url="https://openrouter.ai/api/v1")
 
-async def llmService(guest_id:str ,user_prompt:str):
-    dialogue_history = list(get_guest_history(guest_id))
-    
-    current_history = dialogue_history + [{'role':"user", "content":user_prompt}]
+
+async def LLMResponseService(input:list):
     full_response = ""
     stream = await client.responses.create(
         model="gpt-4o-mini",
-        input=current_history,
+        input=input,
         instructions="You are the witty, helpful assistant inside the Chap Chat application.",
         temperature=1.5,
         stream=True   
@@ -28,6 +26,17 @@ async def llmService(guest_id:str ,user_prompt:str):
         if event.type == "response.output_text.delta":
             full_response +=event.delta
             yield event.delta
-    if full_response:
-        append_guest_dialogue(guest_id,user_prompt,full_response)
+
+
+async def guestLLMService(guest_id:str ,guest_prompt:str):
+    dialogue_history = list(get_guest_history(guest_id))
     
+    current_history = dialogue_history + [{'role':"user", "content":guest_prompt}]
+    full_response = ""
+    try:
+        async for chunk in LLMResponseService(current_history):
+            full_response +=chunk
+            yield chunk
+    finally:
+        if full_response:
+            append_guest_dialogue(guest_id,guest_prompt,full_response)
