@@ -1,12 +1,7 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, UUID4
 
-class chatResponse(BaseModel):
-    userResponse:str
-    agentResponse:str
-    chat_id:str
 
-class chatHistoryResponse(BaseModel):
-    userId:str
-    chatId:str
-    chatTitle:str
-    history:list[chatResponse]= []
+class ChatRequestSchema(BaseModel):
+    userId: UUID4
+    query:str
+    chatId: UUID4
