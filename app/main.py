@@ -30,6 +30,13 @@ app.include_router(auth_route)
 app.include_router(otp_route)
 app.include_router(bot_route)
 
-@app.get("/")
+@app.get("/health")
 def read_root():
     return {"message": "FastAPI backend is running successfully!"}
+
+@app.get("/")
+async def root():
+    print("-----------Port is running on 8000-------------------")
+    return{
+        "message":"Backend is running"
+    }
