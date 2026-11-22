@@ -14,8 +14,8 @@ app = FastAPI(
 )
 origins = [
     "http://localhost:3000",
-    "https://chap-chat-beib8sm3m-shrivastavsarthaks-projects.vercel.app/",
-    "https://chap-chat-ochre.vercel.app/"
+    "https://chap-chat-beib8sm3m-shrivastavsarthaks-projects.vercel.app",
+    "https://chap-chat-ochre.vercel.app"
 ]
 
 app.add_middleware(
